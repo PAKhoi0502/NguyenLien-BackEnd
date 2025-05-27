@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+   <style>
+      /* Tăng cường kiểu dáng cho bảng */
+      .table th,
+      .table td {
+         vertical-align: middle;
+         padding: 10px 15px;
+         /* Thêm khoảng cách trong bảng */
+         text-align: center;
+         /* Căn giữa nội dung */
+      }
+
+      .table-hover tbody tr:hover {
+         background-color: #f1f1f1;
+         /* Hiệu ứng hover cho bảng */
+         transition: background-color 0.3s ease;
+      }
+
+      .btn-outline-warning,
+      .btn-outline-danger {
+         font-weight: bold;
+         padding: 10px 15px;
+         border-radius: 5px;
+         transition: all 0.3s ease;
+      }
+
+      .btn-outline-warning:hover {
+         background-color: #ffc107;
+         border-color: #ffc107;
+         color: white;
+      }
+
+      .btn-outline-danger:hover {
+         background-color: #dc3545;
+         border-color: #dc3545;
+         color: white;
+      }
+
+      /* Đổi màu nền cho bảng */
+      .table-dark {
+         background-color: #343a40;
+         color: #fff;
+      }
+
+      /* Thêm background cho container ngoài bảng */
+      .table-container {
+         background-color: #f8f9fa;
+         /* Màu nền ngoài bảng */
+         padding: 20px;
+         border-radius: 10px;
+         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+         margin-top: 30px;
+      }
+
+      /* Tinh chỉnh kích thước của bảng */
+      .table-sm th,
+      .table-sm td {
+         padding: 5px 10px;
+         /* Giảm kích thước padding để bảng nhỏ lại */
+      }
+   </style>
+   <title>Manager User Account</title>
+</head>
+
+<body>
+   <div class="container table-container">
+      <h2 class="my-4 text-center text-dark">Manager Account</h2>
+      <table class="table table-dark table-hover table-sm">
+         <thead>
+            <tr>
+               <th scope="col">Account</th>
+               <th scope="col">Email</th>
+               <th scope="col">Phone Number</th>
+               <th scope="col">First Name</th>
+               <th scope="col">Last Name</th>
+               <th scope="col">Address</th>
+               <th scope="col">Sex</th>
+               <th scope="col">Image</th>
+               <th scope="col">Role</th>
+               <th scope="col">Action</th>
+            </tr>
+         </thead>
+         <tbody>
+            <% for (let i=0; i < dataTable.length; i++) { %>
+               <tr>
+                  <td>
+                     <%= dataTable[i].loginName ? dataTable[i].loginName : 'Null' %>
+                  </td>
+                  <td>
+                     <%= dataTable[i].email ? dataTable[i].email : 'Null' %>
+                  </td>
+                  <td>
+                     <%= (dataTable[i].phoneNumber !==null && dataTable[i].phoneNumber !==undefined &&
+                        dataTable[i].phoneNumber !=='' ) ? dataTable[i].phoneNumber : 'Null' %>
+                  </td>
+
+                  <td>
+                     <%= dataTable[i].firstName ? dataTable[i].firstName : 'Null' %>
+                  </td>
+                  <td>
+                     <%= dataTable[i].lastName ? dataTable[i].lastName : 'Null' %>
+                  </td>
+                  <td>
+                     <%= dataTable[i].address ? dataTable[i].address : 'Null' %>
+                  </td>
+                  <td>
+                     <% if (dataTable[i].gender==='M' ) { %>
+                        Nam
+                        <% } else if (dataTable[i].gender==='F' ) { %>
+                           Nữ
+                           <% } else { %>
+                              Null
+                              <% } %>
+                  </td>
+                  <td>
+                     <%= dataTable[i].image ? dataTable[i].image : 'Null' %>
+                  </td>
+                  <td>
+                     <% if (dataTable[i].roleId==='R1' ) { %>
+                        Admin
+                        <% } else if (dataTable[i].roleId==='R2' ) { %>
+                           User
+                           <% } else { %>
+                              Null
+                              <% } %>
+                  </td>
+                  <td>
+                     <a href="/updateAccount?id=<%= dataTable[i].id %>" class="btn btn-outline-warning">Edit</a>
+                     <a href="javascript:void(0)"
+                        onclick="confirmDelete(<%= dataTable[i].id %>, '<%= dataTable[i].loginName %>')"
+                        class="btn btn-outline-danger">Delete</a>
+                  </td>
+               </tr>
+               <% } %>
+         </tbody>
+
+      </table>
+   </div>
+   <button onclick="location.href='/'">HomePage</button>
+
+   <button onclick="location.href='/createAccount'">Tạo tài khoản</button>
+   <script>
+      function confirmDelete(userId, userName) {
+         if (confirm("Bạn có chắc chắn muốn xóa tài khoản '" + userName + "' không?")) {
+            window.location.href = '/deleteAccount?id=' + userId;
+         }
+      }
+   </script>
+</body>
+
+</html>

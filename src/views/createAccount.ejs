@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+   <style>
+      body {
+         background-color: #f8f9fa;
+         /* Nền sáng cho toàn bộ trang */
+         font-family: Arial, sans-serif;
+         padding: 30px 0;
+      }
+
+      .container {
+         background-color: #ffffff;
+         /* Nền trắng cho phần form */
+         border-radius: 10px;
+         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+         /* Đổ bóng cho form */
+         padding: 40px;
+         max-width: 600px;
+         margin: auto;
+      }
+
+      h2 {
+         text-align: center;
+         color: #495057;
+         /* Màu chữ cho tiêu đề */
+         margin-bottom: 30px;
+      }
+
+      .form-control {
+         border-radius: 10px;
+         /* Bo tròn các ô nhập liệu */
+         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+         /* Đổ bóng nhẹ cho các ô nhập liệu */
+         font-size: 16px;
+      }
+
+      .form-select {
+         border-radius: 10px;
+         font-size: 16px;
+         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn-primary {
+         background-color: #007bff;
+         border: none;
+         border-radius: 10px;
+         padding: 10px 20px;
+         font-size: 16px;
+         width: 100%;
+         margin-top: 20px;
+         transition: background-color 0.3s ease;
+      }
+
+      .btn-primary:hover {
+         background-color: #0056b3;
+         cursor: pointer;
+      }
+
+      .mb-3 label {
+         font-weight: bold;
+         color: #495057;
+      }
+
+      .form-group {
+         margin-bottom: 20px;
+      }
+
+      .form-group input[type="file"] {
+         padding: 0;
+      }
+   </style>
+   <title>Create Account</title>
+</head>
+
+<body>
+   <div class="container">
+      <h2>Create Account</h2>
+      <% if (typeof errorMessage !=='undefined' && errorMessage) { %>
+         <div class="alert alert-danger">
+            <%= errorMessage %>
+         </div>
+         <% } %>
+            <form action="/post-createAccount" method="POST" onsubmit="return validateForm()">
+               <div>
+                  <a style="font-size: 10px; color: red; font-style: oblique;">* bắt buộc</a>
+               </div>
+               <div class="mb-3">
+                  <label for="loginName" class="form-label">Tên đăng nhập <a style="color: red;">*</a></label>
+                  <input type="text" class="form-control" name="loginName" placeholder="Nhập tên đăng nhập" required
+                     value="<%= oldInput ? oldInput.loginName : '' %>">
+               </div>
+               <div class="mb-3">
+                  <label for="password" class="form-label">Mật khẩu <a style="color: red;">*</a></label>
+                  <input type="password" class="form-control" name="password" placeholder="Nhập mật khẩu" required>
+               </div>
+               <div class="mb-3">
+                  <label for="phoneNumber" class="form-label">Số điện thoại <a style="color: red;">*</a></label>
+                  <input type="text" class="form-control" name="phoneNumber" placeholder="Nhập số điện thoại" required
+                     value="<%= oldInput ? oldInput.phoneNumber : '' %>">
+               </div>
+               <div class="mb-3">
+                  <label for="email" class="form-label">Email</label>
+                  <input type="email" class="form-control" name="email" placeholder="Nhập email"
+                     value="<%= oldInput ? oldInput.email : '' %>">
+               </div>
+               <div class="mb-3">
+                  <label for="firstName" class="form-label">Tên</label>
+                  <input type="text" class="form-control" name="firstName" placeholder="Nhập họ"
+                     value="<%= oldInput ? oldInput.firstName : '' %>">
+               </div>
+               <div class="mb-3">
+                  <label for="lastName" class="form-label">Họ</label>
+                  <input type="text" class="form-control" name="lastName" placeholder="Nhập tên"
+                     value="<%= oldInput ? oldInput.lastName : '' %>">
+               </div>
+               <div class="mb-3">
+                  <label for="address" class="form-label">Địa chỉ</label>
+                  <input type="text" class="form-control" name="address" placeholder="Nhập địa chỉ"
+                     value="<%= oldInput ? oldInput.address : '' %>">
+               </div>
+               <div class="mb-3">
+                  <label for="gender" class="form-label">Giới tính</label>
+                  <select class="form-select" name="gender">
+                     <option selected disabled>Chọn giới tính</option>
+                     <option value="M" <%=oldInput && oldInput.gender==='M' ? 'selected' : '' %>>Nam</option>
+                     <option value="F" <%=oldInput && oldInput.gender==='F' ? 'selected' : '' %>>Nữ</option>
+                  </select>
+               </div>
+               <div class="mb-3">
+                  <label for="roleId" class="form-label">Vai trò <a style="color: red;">*</a></label>
+                  <select class="form-select" name="roleId" id="roleId" required>
+                     <option value="" disabled <%=!oldInput || !oldInput.roleId ? 'selected' : '' %>>Chọn vai trò người
+                        dùng</option>
+                     <option value="R1" <%=oldInput && oldInput.roleId==='R1' ? 'selected' : '' %>>Admin</option>
+                     <option value="R2" <%=oldInput && oldInput.roleId==='R2' ? 'selected' : '' %>>User</option>
+                  </select>
+               </div>
+               <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            <button onclick="location.href='/'">HomePage</button>
+            <button onclick="location.href='/managerAccount'">Quản lý tài khoản</button>
+   </div>
+   <script>
+      function validateForm() {
+         const email = document.querySelector('input[name="email"]').value.trim();
+         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+         if (email && !emailPattern.test(email)) {
+            alert('Email không hợp lệ. Vui lòng nhập đúng định dạng example@domain.com');
+            return false;
+         }
+
+         const roleSelect = document.getElementById("roleId");
+         if (roleSelect.value === "") {
+            alert("Vui lòng chọn vai trò người dùng.");
+            return false;
+         }
+         return true;
+      }
+   </script>
+
+</body>
+
+</html>
