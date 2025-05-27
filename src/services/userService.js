@@ -11,7 +11,7 @@ let handleUserLogin = (identifier, password) => {
       try {
          let userData = {};
 
-         // Tìm user theo loginName hoặc phoneNumber
+         // Tìm user và kèm theo role
          let user = await db.User.findOne({
             where: {
                [db.Sequelize.Op.or]: [
@@ -20,7 +20,12 @@ let handleUserLogin = (identifier, password) => {
                ]
             },
             attributes: ['id', 'loginName', 'phoneNumber', 'roleId', 'password'],
-            raw: true
+            include: [
+               {
+                  model: db.Role,
+                  attributes: ['name'], // lấy role name
+               }
+            ]
          });
 
          if (!user) {
@@ -31,10 +36,15 @@ let handleUserLogin = (identifier, password) => {
 
          let check = bcrypt.compareSync(password, user.password);
          if (check) {
+            // Lấy tên role từ user.Role.name
+            let userPlain = user.get({ plain: true });
+            userPlain.role = userPlain.Role?.name || 'user'; // gán roleName vào
+            delete userPlain.password;
+            delete userPlain.Role;  // Xóa object Role, không cần trả về cho frontend
+
             userData.errCode = 0;
             userData.errMessage = 'OK';
-            delete user.password;
-            userData.user = user;
+            userData.user = userPlain;
          } else {
             userData.errCode = 3;
             userData.errMessage = 'Wrong password!';
